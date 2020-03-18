@@ -1,0 +1,32 @@
+resources:
+  - name: PublicGitHub
+    type: GitRepo
+    configuration:
+      path: Satheesh-Balachandran/pipelines
+      gitProvider: PublicGitHub
+      branches:
+        include: master
+pipelines:
+  - name: mvn_build_sample
+    steps:
+      - name: mvn_build
+        type: MvnBuild
+        configuration:
+          sourceLocation: Hygieia
+          mvnCommand: clean install -ntp
+          configFileLocation: .
+          configFileName: mvn-art-config
+          inputResources:
+            - name: PublicGitHub
+          integrations:
+            - name: satheeshart
+          runtime:
+            type: image
+            image:
+              auto:
+                language: java
+                versions:
+                  - "11"
+        execution:
+          onStart:
+            - javac -version
